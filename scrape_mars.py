@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[4]:
+# In[19]:
 
 
 # Dependencies
@@ -11,7 +11,7 @@ import requests
 import pandas as pd
 
 
-# In[5]:
+# In[20]:
 
 
 executable_path = {'executable_path': 'chromedriver'}
@@ -23,19 +23,23 @@ browser = Browser('chrome', **executable_path, headless=False)
 
 #NASA Mars News
 
+
+# In[21]:
+
+
 # visiting webpage
 news_url = 'https://mars.nasa.gov/news/'
 browser.visit(news_url)
 
 
-# In[7]:
+# In[22]:
 
 
 # Create soup object; parse with 'html.parser'
 news_soup = bs( browser.html,"html.parser")
 
 
-# In[8]:
+# In[23]:
 
 
 #title and headline
@@ -45,13 +49,13 @@ print(news_title)
 print(news_p)
 
 
-# In[9]:
+# In[ ]:
 
 
 #JPL Mars Space Images
 
 
-# In[14]:
+# In[24]:
 
 
 # visiting webpage
@@ -59,7 +63,7 @@ jpl_url = 'https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars'
 browser.visit(jpl_url)
 
 
-# In[17]:
+# In[25]:
 
 
 #scrape JPL with html.parser
@@ -135,7 +139,7 @@ facts_table.to_html('Mars_facts_table.html', index = False)
 # Mars Hemispheres
 
 
-# In[66]:
+# In[15]:
 
 
 # visiting webpage
@@ -146,17 +150,34 @@ browser.visit(hemisphere_url)
 hemi_soup = bs( browser.html,"html.parser")
 
 
-# In[69]:
+# In[5]:
 
 
 main_hemi_url = 'https://pds-imaging.jpl.nasa.gov/'
 all_img = hemi_soup.find_all('div', class_='item') 
-images_url = []
 
 
-# In[68]:
+# In[9]:
 
 
+hemi_images_url = []
+
+
+# In[18]:
+
+
+for img in all_img: 
+    title = img.find('h3').text
+    img_url = img.find('a', class_='itemLink product-item')['href']
+    browser.visit(main_hemi_url + img_url)
+    img_soup = bs(browser.html, 'html.parser')
+    
+    full_img_url = main_hemi_url + img_soup.find('img', class_='wide-image')['src']
+
+    hemi_images_url.append({"title" : title, "img_url" : img_url})
+    
+# Display hemisphere_image_urls
+hemi_images_url
 
 
 # In[ ]:
